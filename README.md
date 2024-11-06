@@ -120,6 +120,10 @@ JOIN "DimCountry" c ON f.countryid = c.countryid
 GROUP BY CUBE (year, country);
 ```
 
+## 6. BI Dashboard using IBM Cognos Analytics
 
+[Link to dashboard](https://ap1.ca.analytics.ibm.com/bi/?perspective=dashboard&pathRef=.my_folders%2FIBM%2BDE%2BCapstone%2BProject&action=view&mode=dashboard&subView=model00000193015a564f_00000000)
+
+[PDF of dashboard](IBM%20DE%20Capstone%20Project.pdf)
 
 
