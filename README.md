@@ -61,22 +61,64 @@ CREATE TABLE sales_data (
 
 [Link to script](datadump.sh)
 
-Because run MySQL in Docker Container, I need to created script named [exec_dump_script.sh](exec_dump_script.sh) to copy and run it in container environment.
+Because run MySQL in Docker Container, I need to created script named [exec_script.sh](exec_script.sh) to copy and run it in container environment.
 
 Then, all you need to do is
 
 ```bash
-sudo chmod +x datadump.sh exec_dump_script.sh
+sudo chmod +x datadump.sh exec_script.sh
 ```
 
 Then run
 
 ```bash
-./exec_dump_script.sh
+./exec_script.sh
 ```
 
 ## 4. Querying data in NoSQL Database
 
+
+## 5. Data Warehouse Design and Setup
+
+**Create a grouping sets query using the columns country, category, totalsales.**
+
+```SQL
+SELECT country, category, SUM(f.amount)
+FROM
+	"FactSales" f
+JOIN
+	"DimCountry" c ON c.countryid = f.countryid
+JOIN
+	"DimCategory" ca ON ca.categoryid = f.categoryid
+GROUP BY GROUPING SETS (
+	(country, category),
+	(country),
+	(category),
+	()
+);
+```
+
+**Create a rollup query using the columns year, country, and totalsales.**
+
+```SQL
+SELECT year, country, SUM(amount)
+FROM
+	"FactSales" f
+JOIN "DimDate" d ON f.dateid = d.dateid
+JOIN "DimCountry" c ON f.countryid = c.countryid
+GROUP BY ROLLUP (year, country);
+```
+
+**Create a cube query using the columns year, country, and average sales.**
+
+```SQL
+SELECT year, country, AVG(amount)
+FROM
+    "FactSales" f
+JOIN "DimDate" d ON f.dateid = d.dateid
+JOIN "DimCountry" c ON f.countryid = c.countryid
+GROUP BY CUBE (year, country);
+```
 
 
 
