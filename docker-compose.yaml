@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mysql:8.0.22
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./mysql_data/dumps:/dumps
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecretpassword
+      MYSQL_DATABASE: sales
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 123
+    networks:
+      - my_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.4
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: mysecretpassword
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - my_network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mysecretpassword
+    networks:
+      - my_network
+
+  mongo_backup_tools:
+    image: mongo:6.0
+    container_name: mongo_backup_tools
+    depends_on:
+      - mongodb
+    networks:
+      - my_network
+    command: ["sleep", "infinity"]
+    volumes:
+      - ./mongodb_backup:/backup
+
+volumes:
+  mysql_data:
+  mongodb_data:
+
+networks:
+  my_network:
